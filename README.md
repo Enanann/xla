@@ -1,4 +1,4 @@
-# vkpj (Vulkan Image Pre-processing)
+# Vulkan Image Processing
 
 An image pre-processing application built with the Vulkan API. Users can load images into a 2D space, navigate the view, and apply various image effects directly on the GPU using Compute Shaders.
 
