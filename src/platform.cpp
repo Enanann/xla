@@ -1,0 +1,65 @@
+#include "platform.hpp"
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+
+Window::Window() {
+    glfwInit();
+    
+    glfwWindowHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+}
+
+Window::~Window() {
+    glfwDestroyWindow(mWindow);
+
+    glfwTerminate();
+}
+
+void Window::create() {
+    mWindow = glfwCreateWindow(MIN_WIDTH, MIN_HEIGHT, "pkvk", nullptr, nullptr);
+    if (!mWindow) {
+        std::cerr << "Can not create window";
+        return;
+    }
+    std::cout << glfwGetPlatform() << '\n';
+
+    glfwSetWindowUserPointer(mWindow, this);
+    glfwSetFramebufferSizeCallback(mWindow, framebufferResizeCallback);
+    glfwSetCursorPosCallback(mWindow, cursorPositionCallback);
+    glfwSetScrollCallback(mWindow, scrollCallback);
+}
+
+void Window::update() {
+    glfwPollEvents();
+}
+
+void Window::wait() {
+    glfwWaitEvents();
+}
+
+void Window::getFrameBufferSize(int* width, int* height) const {
+    glfwGetFramebufferSize(mWindow, width, height);
+}
+
+bool Window::getResizeStatus() const {
+    return mFramebufferResized;
+}
+
+void Window::setResizeStatus(bool value) {
+    mFramebufferResized = value;
+}
+
+std::pair<double, double> Window::getMousePos() {
+    return {mMouseX, mMouseY};
+}
+
+double Window::getScrollOffset() {
+    return mScrollOffset;
+}
+
+
+GLFWwindow* Window::getGLFWHandle() const {
+    return mWindow;
+}

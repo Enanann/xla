@@ -1,0 +1,7 @@
+build
+.cache
+.vscode
+imgui.ini
+valgrindlog.txt
+model_testing/
+models/

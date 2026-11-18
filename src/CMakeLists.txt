@@ -1,0 +1,86 @@
+set(SOURCES 
+    main.cpp
+    ${IMGUI_SOURCES}
+    app.cpp 
+    platform.cpp
+    read_binary.cpp 
+    image_loader.cpp
+    image_saver.cpp
+    vertex.cpp
+    imgui_system.cpp
+    input_manager.cpp
+    threadpool.cpp
+
+    batch/batch_processor.cpp
+    
+    core/device.cpp 
+    core/glfw_surface.cpp 
+    core/instance.cpp 
+    core/shader.cpp 
+    core/swapchain.cpp 
+    core/commandbuffer.cpp
+    core/commandpool.cpp
+    core/buffer.cpp
+    core/descriptor_layout.cpp
+    core/descriptor_pool.cpp
+    core/descriptor_set.cpp
+    
+    image/image.cpp
+    image/sampler.cpp
+
+    effects/effect.cpp
+    effects/effect_registry.cpp
+
+    pipeline/graphics_pipeline.cpp
+    pipeline/compute_pipeline.cpp
+    
+    renderer/renderer.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/../external
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/pipeline
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer
+    ${CMAKE_CURRENT_SOURCE_DIR}/image
+    ${CMAKE_CURRENT_SOURCE_DIR}/effects
+    ${IMGUI_DIR}
+)
+
+target_link_libraries(${CMAKE_PROJECT_NAME}
+    PRIVATE 
+    Vulkan::cppm 
+    glfw 
+    ncnn
+)
+
+# C++ standard
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+
+# Compile shaders automatically
+add_slang_shader_target(
+    ${PROJECT_NAME}_shaders
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/shader_base.slang"
+    # SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/utils.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/grayscale.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vignette.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/hsl.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/sepia.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/lens_distortion.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/brightness_contrast.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/exposure.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/sobel.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/gaussian_noise.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/salt_and_pepper.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/median_filter.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/pseudo_median_filter.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/chromatic_aberration.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/affine_transformation.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/gaussian_blur.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/canny.slang"
+    SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/shaders/mask.slang"
+)
+add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_shaders)
